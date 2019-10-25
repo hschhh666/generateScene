@@ -15,6 +15,7 @@ int imgSize = sceneSize / pixelSize;
 CvRect box;
 cv::Mat scene(imgSize, imgSize, CV_8UC3, cv::Scalar(255, 255, 255));
 cv::Mat tmp = scene.clone();
+cv::Mat SatalliteImage;
 
 bool buttonState = 0;
 
@@ -26,7 +27,7 @@ std::vector<Position> targetPositions;
 void MouseCallback1(int event, int x, int y, int flag, void * param)
 {
 	int thinkness = -1;
-	scene = tmp.clone();
+	scene = SatalliteImage.clone();
 
 	if (key == int('o')) 
 	{
@@ -38,7 +39,8 @@ void MouseCallback1(int event, int x, int y, int flag, void * param)
 			std::cout << "CV_EVENT_LBUTTONDOWN\n";
 			break;
 		case CV_EVENT_MOUSEMOVE:
-			if (buttonState) {
+			if (buttonState) 
+			{
 				CvRect tmpbox;
 				tmpbox.x = MIN(x, box.x);
 				tmpbox.y = MIN(y, box.y);
@@ -46,6 +48,7 @@ void MouseCallback1(int event, int x, int y, int flag, void * param)
 				tmpbox.height = fabs(y - box.y);
 				std::cout << "CV_EVENT_MOUSEMOVE\n";
 				cv::rectangle(scene, tmpbox, cv::Scalar(0, 0, 0), thinkness);
+				//cv::line(scene, cv::Point(box.x, box.y), cv::Point(x, y), cv::Scalar(0, 0, 0), 2);
 			}
 			break;
 		case CV_EVENT_LBUTTONUP:
@@ -57,6 +60,9 @@ void MouseCallback1(int event, int x, int y, int flag, void * param)
 			tmpbox.height = fabs(y - box.y);
 			std::cout << "CV_EVENT_LBUTTONUP\n";
 			cv::rectangle(tmp, tmpbox, cv::Scalar(0, 0, 0), thinkness);
+			cv::rectangle(SatalliteImage, tmpbox, cv::Scalar(0, 0, 0), thinkness);
+			//cv::line(SatalliteImage, cv::Point(box.x, box.y), cv::Point(x, y), cv::Scalar(0, 0, 0), 2);
+			//cv::line(tmp, cv::Point(box.x, box.y), cv::Point(x, y), cv::Scalar(0, 0, 0), 2);
 			break;
 		}
 	}
@@ -70,7 +76,8 @@ void MouseCallback1(int event, int x, int y, int flag, void * param)
 				p.y = y;
 				targetPositions.push_back(p);
 				std::cout << "CV_EVENT_LBUTTONDOWN\n";
-				//cv::circle(tmp, cv::Point(x, y), 4, cv::Scalar(0, 0, 255), -1);
+				cv::circle(tmp, cv::Point(x, y), 4, cv::Scalar(0, 0, 255), -1);
+				//cv::circle(SatalliteImage, cv::Point(x, y), 4, cv::Scalar(0, 0, 255), -1);
 				break;
 		}
 	}
@@ -79,7 +86,14 @@ void MouseCallback1(int event, int x, int y, int flag, void * param)
 
 int main()
 {
-	std::string storagedPath = "D:/Research/IV2020MapPrediction/Code/MapPrediction/GenerateFakeMap/C++/EastGateScene";
+	std::string storagedPath = "D:/Research/IV2020MapPrediction/Code/MapPrediction/GenerateFakeMap/C++/tmp";
+	std::string SatalliteImageFile = "D:/Research/IV2020MapPrediction/Code/MapPrediction/GenerateFakeMap/C++/SatelliteEastSouthGate.png";
+
+	SatalliteImage = cv::imread(SatalliteImageFile);
+	scene = SatalliteImage.clone();
+
+
+
 
     std::cout << "Hello World!\n"; 
 	cv::namedWindow("Scene");
